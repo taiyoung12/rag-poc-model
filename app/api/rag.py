@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, Query 
-
 from app.schemas.base import ResponseBase
 import app.errors.exceptions as exceptions 
 from app.llm.rag import get_rag_chain
+
 
 router = APIRouter(tags=["rag"])
 
@@ -25,7 +25,7 @@ async def query_llm(
     except ValueError:
         raise exceptions.IncorrectKeywordError()
     answer = rag_chain.invoke(prompt) 
-    response = {"prpompt": prompt, "answer": answer}
+    response = {"prompt": prompt, "answer": answer}
 
     return ResponseBase(
         code=status.HTTP_201_CREATED,

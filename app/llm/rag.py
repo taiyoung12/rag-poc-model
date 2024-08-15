@@ -10,7 +10,8 @@ from langchain_core.prompts import ChatPromptTemplate
 
 # 키워드와 PDF 파일 매핑
 keyword_to_pdf = {
-    "자유": "./app/resources/마이데이터.pdf"
+    "마이데이터": "./app/resources/마이데이터.pdf",
+    "마이데이터_API": "./app/resources/마이데이터_API.pdf"
 }
 
 # 각 키워드에 대한 검색 객체와 RAG 체인 생성
