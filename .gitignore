@@ -1,3 +1,2 @@
 __pycache__/
-./vectorstore_마이데이터.pdf
-./vectorstore_마이데이터_API.pdf
+vectorstore_*.pdf
