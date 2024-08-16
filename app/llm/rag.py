@@ -15,6 +15,7 @@ keyword_to_pdf = {
 }
 
 # 각 키워드에 대한 검색 객체와 RAG 체인 생성
+model = None
 rag_chains = {}
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
@@ -22,14 +23,24 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 embeddings = HuggingFaceEmbeddings(
     model_name='BAAI/bge-m3',
-    model_kwargs={'device':'mps'},
+    model_kwargs={'device':'cpu'},
 )
 
+# def get_model(model_name: str, temperature: float):
+#     global model
+#     if model is None:
+#         model = ChatOllama(model=model_name, temperature=temperature)
+#     return model
 def get_model(model_name: str, temperature: float):
-    return ChatOllama(model=model_name, temperature=temperature)
-
-# 캐시된 모델 로드 또는 생성
-model = get_model("llama3-ko", 0.7)
+    global model
+    if model is None:
+        try:
+            model = ChatOllama(model=model_name, temperature=temperature)
+            print("model success")
+        except Exception as e:
+            print(f"Error initializing Ollama model: {e}")
+            raise
+    return model
 
 template = '''
 당신은 친절한 챗봇입니다. 아래 제공된 문서를 참고하여 최대한 정확하고 상세한 답변을 제공해 주세요. 모든 답변은 한국어로 작성되어야 합니다.
@@ -50,15 +61,22 @@ def format_docs(docs):
 def initialize_rag_chains():
     global rag_chains
     for keyword, pdf_file in keyword_to_pdf.items():
-        loader = PyMuPDFLoader(pdf_file)
-        pages = loader.load()
-        docs = text_splitter.split_documents(pages)
-        
         vectorstore_path = f'vectorstore_{os.path.basename(pdf_file)}'
-        vectorstore = Chroma.from_documents(docs, embeddings, persist_directory=vectorstore_path)
-        vectorstore.persist()
-
+        
+        if os.path.exists(vectorstore_path):
+            print(f"Loading existing vectorstore for {keyword}")
+            vectorstore = Chroma(persist_directory=vectorstore_path, embedding_function=embeddings)
+        else:
+            print(f"Creating new vectorstore for {keyword}")
+            loader = PyMuPDFLoader(pdf_file)
+            pages = loader.load()
+            docs = text_splitter.split_documents(pages)
+            vectorstore = Chroma.from_documents(docs, embeddings, persist_directory=vectorstore_path)
+            vectorstore.persist()
+        
         retriever = vectorstore.as_retriever(search_kwargs={'k': 3})
+        model = get_model("llama3-ko", 0.7) 
+        
         rag_chain = (
             {'context': retriever | format_docs, 'question': RunnablePassthrough()}
             | prompt
