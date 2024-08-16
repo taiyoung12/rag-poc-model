@@ -14,3 +14,5 @@ torch==2.4.0
 huggingface-hub==0.24.5
 scipy==1.14.0
 requests==2.31.0
+streamlit==1.37.1
+streamlit-autorefresh==1.0.1
