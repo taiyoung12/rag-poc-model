@@ -24,6 +24,7 @@ async def query_llm(
         rag_chain = get_rag_chain(keyword)
     except ValueError:
         raise exceptions.IncorrectKeywordError()
+
     answer = rag_chain.invoke(prompt) 
     response = {"prompt": prompt, "answer": answer}
 
