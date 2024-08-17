@@ -1,6 +1,6 @@
 # rag-poc-model
 
-이 프로젝트는 MacOS에서 Ollama 모델을 로드하고 Streamlit으로 웹 인터페이스를 띄우는 과정을 자동화합니다. Ollama 설치, 모델 다운로드, 그리고 Python 패키지 설치 및 웹 애플리케이션 실행 과정을 다룹니다.
+이 프로젝트는 MacOS에서 LangChain을 사용하여 Ollama 모델을 로드하고 Streamlit으로 웹 인터페이스를 로드합니다. Ollama 설치, 모델 다운로드, 그리고 Python 패키지 설치 및 웹 애플리케이션 실행 과정을 다룹니다.
 
 ## 프로젝트 구조
 
@@ -37,7 +37,7 @@ https://ollama.com/download
 Hugging Face에서 제공하는 Llama-3-Open-Ko-8B 모델 파일을 다운로드합니다.
 
 ```bash
-wget https://huggingface.co/teddylee777/Llama-3-Open-Ko-8B-gguf/resolve/main/Llama-3-Open-Ko-8B-Q8_0.gguf -O ./Llama-3-Open-Ko-8B-Q8_0.gguf
+wget https://huggingface.co/teddylee777/Llama-3-Open-Ko-8B-gguf/resolve/main/Llama-3-Open-Ko-8B-Q8_0.gguf
 ``` 
 
 ## 3. 모델 생성 
@@ -76,9 +76,11 @@ streamlit-autorefresh==1.0.1
 ## 5. 서버 실행 
 ```bash
 uvicorn app.application:app --host 0.0.0.0 --port 8001
+localhost:8001/docs ( Swagger )
 ``` 
 
 ## 6. 화면 실행  
 ```bash
 streamlit run web.py
+localhost:8501 ( 화면 )
 ``` 
