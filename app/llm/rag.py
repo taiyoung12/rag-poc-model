@@ -26,11 +26,6 @@ embeddings = HuggingFaceEmbeddings(
     model_kwargs={'device':'cpu'},
 )
 
-# def get_model(model_name: str, temperature: float):
-#     global model
-#     if model is None:
-#         model = ChatOllama(model=model_name, temperature=temperature)
-#     return model
 def get_model(model_name: str, temperature: float):
     global model
     if model is None:
