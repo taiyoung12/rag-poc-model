@@ -13,6 +13,8 @@ st.sidebar.write("이 페이지를 통해 LLM과 상호작용할 수 있습니�
 
 st.header("🔍 Send a Message")
 
+disable_send_button = False
+
 with st.form("message_form"):
     keyword = st.selectbox(
         "Choose a keyword:",
@@ -25,6 +27,7 @@ with st.form("message_form"):
     submitted = st.form_submit_button("Send")
 
     if submitted:
+        disable_send_button = True
         if keyword and prompt:
             try:
                 url = f"http://localhost:8080/rag?keyword={keyword}&prompt={prompt}"
@@ -36,6 +39,10 @@ with st.form("message_form"):
                 st.error(f"❌ 메시지 전송 중 오류가 발생했습니다: {e}")
         else:
             st.warning("⚠️ 모든 필드를 입력해야 합니다.")
+
+        time.sleep(1)
+        
+        disable_send_button = False
 
 st.header("📨 Latest LLM Response")
 
