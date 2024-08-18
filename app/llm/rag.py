@@ -7,6 +7,8 @@ from langchain_community.chat_models import ChatOllama
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+import app.errors.exceptions as exceptions 
+
 
 # 키워드와 PDF 파일 매핑
 keyword_to_pdf = {
@@ -22,7 +24,7 @@ text_splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=50,
 )
 embeddings = HuggingFaceEmbeddings(
-    model_name='BAAI/bge-m3',
+    model_name='monologg/koelectra-base-v3-discriminator',
     model_kwargs={'device':'cpu'},
 )
 
@@ -86,5 +88,5 @@ def initialize_rag_chains():
 
 def get_rag_chain(keyword: str):
     if keyword not in rag_chains:
-        raise ValueError(f"Keyword {keyword} not found in RAG chains.")
+        raise exceptions.IncorrectKeywordError()
     return rag_chains[keyword]

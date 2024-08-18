@@ -2,6 +2,7 @@ from typing import Optional
 
 class StatusCode:
     HTTP_500 = 500
+    HTTP_401 = 401
 
 class APIException(Exception):
     status_code: int
@@ -13,7 +14,7 @@ class APIException(Exception):
         *,
         status_code: int = StatusCode.HTTP_500,
         code: str = "000000",
-        message: Optional[str] = "오류가 발생했습니다. 시스템 관리자에게 문의해주세요",
+        message: Optional[str] = "서버 에러가 발생하였습니다.",
     ):
         self.status_code = status_code
         self.code = code
