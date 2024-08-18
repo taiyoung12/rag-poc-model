@@ -2,9 +2,14 @@ from fastapi import APIRouter, status, Query
 from app.schemas.base import ResponseBase
 import app.errors.exceptions as exceptions 
 from app.llm.rag import get_rag_chain
+from enum import Enum
 
 
 router = APIRouter(tags=["rag"])
+
+class Keyword(str, Enum): 
+    mydata = "마이데이터"
+    mydata_api = "마이데이터_API"
 
 @router.get(
     "/rag",
@@ -17,13 +22,13 @@ router = APIRouter(tags=["rag"])
     summary="RAG Request",
 )
 async def query_llm(
-    keyword: str = Query(..., description="The keyword to identify the RAG chain"),
+    keyword: Keyword = Query(..., description="The keyword to identify the RAG chain"),
     prompt: str = Query(..., description="The prompt to send to the LLM"),
 ) -> ResponseBase:
     try:
         rag_chain = get_rag_chain(keyword)
-    except ValueError:
-        raise exceptions.IncorrectKeywordError()
+    except Exception as e:
+        raise e 
 
     answer = rag_chain.invoke(prompt) 
     response = {"prompt": prompt, "answer": answer}
